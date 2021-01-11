@@ -113,6 +113,6 @@ defmodule HorrifiedEngine.Board do
   def draw_item(board) do
     [head | tail] = board.items |> Enum.shuffle
     board = %Board{spaces: board.spaces, items: tail}
-    {:ok, board}
+    {:ok, board, head}
   end
 end
