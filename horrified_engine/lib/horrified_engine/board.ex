@@ -1,7 +1,7 @@
 defmodule HorrifiedEngine.Board do
   alias HorrifiedEngine.{Board, Space, Item, Perk}
   @enforce_keys [:spaces, :items, :perk_deck]
-  defstruct [:spaces, :items, :perk_deck]
+  defstruct [:spaces, :items, :perk_deck, :players]
 
 
   def new(), do:
@@ -88,17 +88,27 @@ defmodule HorrifiedEngine.Board do
         ])),
       ],
       items: Item.get_item_bag(),
+      players: [
+        %{name: "test", perks: []}
+      ]
     }
 
-  def draw_perk_card_and_update_board(board) do
+  def draw_perk_card_and_update_board(board, player_name) do
     {perk_deck, draw} = draw_perk_card(board.perk_deck)
-    board = %{board | perk_deck: perk_deck}
-    {board, draw}
+    players = assign_perk_card(board.players, player_name, draw)
+    board = %{board | perk_deck: perk_deck, players: players}
   end
-  
-  def draw_perk_card(perk_deck) do
+
+  defp draw_perk_card(perk_deck) do
     [draw | perk_deck] = perk_deck
     {perk_deck, draw}
+  end
+
+  defp assign_perk_card(players, player_name, card) do
+    player = Enum.find(players, fn sp -> sp.name == player_name end)
+    new_perks = [card | player.perks]
+    player = %{player | perks: new_perks } 
+    List.replace_at(players, Enum.find_index(players, fn player -> player.name == player_name end), player)
   end
 
   def draw_item_and_update_board(board) do
