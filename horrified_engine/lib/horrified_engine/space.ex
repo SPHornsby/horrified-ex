@@ -4,6 +4,6 @@ defmodule HorrifiedEngine.Space do
   defstruct [:name, :type, :neighbors, :items, :heroes, :monsters, :villagers]
 
   def new(name, type, neighbors), do:
-    %Space{name: name, type: type, neighbors: neighbors, items: MapSet.new(), heroes: MapSet.new(), monsters: MapSet.new(), villagers: MapSet.new()}
+    %Space{name: name, type: type, neighbors: neighbors, items: [], heroes: [], monsters: [], villagers: []}
 
 end
