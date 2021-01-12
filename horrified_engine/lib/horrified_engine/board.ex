@@ -150,4 +150,16 @@ defmodule HorrifiedEngine.Board do
     new_spaces = List.replace_at(spaces, Enum.find_index(spaces, fn sp -> sp.name == item.start_location end), space)
     place_item(new_spaces, items)
   end
+
+  def place_villager_and_update_board(board, space_name, villager) do
+    new_spaces = place_villager(board.spaces, space_name, villager)
+    %{board | spaces: new_spaces}
+  end
+
+  defp place_villager(spaces, space_name, villager) do
+    space = Enum.find(spaces, fn sp -> sp.name == space_name end)
+    new_villagers = [villager | space.villagers]
+    space = %{space | villagers: new_villagers } 
+    List.replace_at(spaces, Enum.find_index(spaces, fn sp -> sp.name == space_name end), space)
+  end
 end
