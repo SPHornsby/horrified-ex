@@ -1,11 +1,12 @@
 defmodule HorrifiedEngine.Board do
-  alias HorrifiedEngine.{Board, Space, Item}
-  @enforce_keys [:spaces, :items]
-  defstruct [:spaces, :items]
+  alias HorrifiedEngine.{Board, Space, Item, Perk}
+  @enforce_keys [:spaces, :items, :perk_deck]
+  defstruct [:spaces, :items, :perk_deck]
 
 
   def new(), do:
     %Board{
+      perk_deck: Perk.get_deck(),
       spaces: [
         Space.new("hospital", :land, MapSet.new([
           "church"
@@ -86,29 +87,19 @@ defmodule HorrifiedEngine.Board do
           "tower"
         ])),
       ],
-      items: [
-        Item.new("kite_1", :blue, 1, "tower"),
-        Item.new("kite_2", :blue, 1, "tower"),
-        Item.new("anatomy_text_1", :blue, 1, "institute"),
-        Item.new("anatomy_text_2", :blue, 1, "institute"),
-        Item.new("centrifuge_1", :blue, 1, "laboratory"),
-        Item.new("centrifuge_2", :blue, 1, "laboratory"),
-        Item.new("analysis_1", :blue, 2, "institute"),
-        Item.new("analysis_2", :blue, 2, "institute"),
-        Item.new("microscope_1", :blue, 2, "tower"),
-        Item.new("microscope_2", :blue, 2, "tower"),
-        Item.new("experiment_1", :blue, 2, "laboratory"),
-        Item.new("experiment_2", :blue, 2, "laboratory"),
-        Item.new("searchlight_1", :blue, 2, "precinct"),
-        Item.new("telescope_1", :blue, 2, "mansion"),
-        Item.new("rotenone_1", :blue, 3, "institute"),
-        Item.new("monocane_mixture_1", :blue, 3, "inn"),
-        Item.new("fossil_1", :blue, 3, "camp"),
-        Item.new("camera_1", :blue, 3, "laboratory"),
-        Item.new("cosmic_ray_diffuser_1", :blue, 3, "tower"),
-        Item.new("nebularium_1", :blue, 3, "tower"),
-      ]
+      items: Item.get_item_bag(),
     }
+
+  def draw_perk_card_and_update_board(board) do
+    {perk_deck, draw} = draw_perk_card(board.perk_deck)
+    board = %{board | perk_deck: perk_deck}
+    {board, draw}
+  end
+  
+  def draw_perk_card(perk_deck) do
+    [draw | perk_deck] = perk_deck
+    {perk_deck, draw}
+  end
 
   def draw_item_and_update_board(board) do
     draw_item_and_update_board(board, 1)
