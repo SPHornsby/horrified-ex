@@ -6,7 +6,7 @@ defmodule HorrifiedEngine.Board do
 
   def new(), do:
     %Board{
-      spaces: MapSet.new([
+      spaces: [
         Space.new("hospital", :land, MapSet.new([
           "church"
         ])),
@@ -85,7 +85,7 @@ defmodule HorrifiedEngine.Board do
         Space.new("dungeon", :land, MapSet.new([
           "tower"
         ])),
-      ]),
+      ],
       items: [
         Item.new("kite_1", :blue, 1, "tower"),
         Item.new("kite_2", :blue, 1, "tower"),
@@ -110,19 +110,41 @@ defmodule HorrifiedEngine.Board do
       ]
     }
 
-  def draw_item(items), do:
-    draw_items(items, 1, [])
+  def draw_item_and_update_board(board) do
+    {items, draw} = draw_items(board.items, 1)
+    board = %{board | items: items}
+    {board, draw}
+  end
+  
+  def draw_item_and_update_board(board, n) do
+    {items, draw} = draw_items(board.items, n)
+    board = %{board | items: items}
+    {board, draw}
+  end
+  
+  # def draw_item(items), do:
+  #   draw_items(items, 1, [])
 
-  def draw_items(items, n), do:
+  defp draw_items(items, n), do:
     draw_items(items, n, [])
 
-  def draw_items(items, n, draw) when n <= 0 do
-    {:ok, items, draw}
+  defp draw_items(items, n, draw) when n <= 0 do
+    {items, draw}
   end
 
-  def draw_items(items, n, draw) do
+  defp draw_items(items, n, draw) do
     [head | items] = items |> Enum.shuffle
     draw = [head | draw]
     draw_items(items, n - 1, draw)
+  end
+
+  def place_item(board, item) do
+    space_name = item.start_location
+    space_index = Enum.find_index(board.spaces, fn sp -> sp.name == space_name end)
+    space = Enum.find(board.spaces, fn sp -> sp.name == space_name end)
+    new_items = [item | space.items]
+    space = %{space | items: new_items }   
+    new_spaces = List.replace_at(board.spaces, space_index, space)
+    %{board | spaces: new_spaces}  
   end
 end
