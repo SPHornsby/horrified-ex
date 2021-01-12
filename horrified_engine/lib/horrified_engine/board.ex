@@ -110,13 +110,19 @@ defmodule HorrifiedEngine.Board do
       ]
     }
 
-  def draw_item(items, n, draw) when n <= 0 do
+  def draw_item(items), do:
+    draw_items(items, 1, [])
+
+  def draw_items(items, n), do:
+    draw_items(items, n, [])
+
+  def draw_items(items, n, draw) when n <= 0 do
     {:ok, items, draw}
   end
 
-  def draw_item(items, n, draw) do
+  def draw_items(items, n, draw) do
     [head | items] = items |> Enum.shuffle
     draw = [head | draw]
-    draw_item(items, n - 1, draw)
+    draw_items(items, n - 1, draw)
   end
 end
