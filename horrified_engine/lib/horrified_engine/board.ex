@@ -133,13 +133,15 @@ defmodule HorrifiedEngine.Board do
     draw_items(items, n - 1, draw)
   end
 
-  def place_item(board, item) do
-    space_name = item.start_location
-    space_index = Enum.find_index(board.spaces, fn sp -> sp.name == space_name end)
-    space = Enum.find(board.spaces, fn sp -> sp.name == space_name end)
+  def place_item_and_update_board(board, item) do
+    new_spaces = place_item(board.spaces, item)
+    %{board | spaces: new_spaces}  
+  end
+
+  defp place_item(spaces, item) do
+    space = Enum.find(spaces, fn sp -> sp.name == item.start_location end)
     new_items = [item | space.items]
     space = %{space | items: new_items }   
-    new_spaces = List.replace_at(board.spaces, space_index, space)
-    %{board | spaces: new_spaces}  
+    List.replace_at(spaces, Enum.find_index(spaces, fn sp -> sp.name == item.start_location end), space)
   end
 end
