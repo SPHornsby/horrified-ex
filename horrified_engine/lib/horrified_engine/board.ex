@@ -111,9 +111,7 @@ defmodule HorrifiedEngine.Board do
     }
 
   def draw_item_and_update_board(board) do
-    {items, draw} = draw_items(board.items, 1)
-    board = %{board | items: items}
-    {board, draw}
+    draw_item_and_update_board(board, 1)
   end
   
   def draw_item_and_update_board(board, n) do
@@ -121,9 +119,6 @@ defmodule HorrifiedEngine.Board do
     board = %{board | items: items}
     {board, draw}
   end
-  
-  # def draw_item(items), do:
-  #   draw_items(items, 1, [])
 
   defp draw_items(items, n), do:
     draw_items(items, n, [])
