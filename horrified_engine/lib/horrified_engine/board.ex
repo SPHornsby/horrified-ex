@@ -1,13 +1,14 @@
 defmodule HorrifiedEngine.Board do
-  alias HorrifiedEngine.{Board, Space, Item, Perk}
+  alias HorrifiedEngine.{Board, Space, Item, Perk, MonsterCard}
   @enforce_keys [:spaces, :items, :perk_deck]
-  defstruct [:spaces, :items, :perk_deck, :players, :terror_track]
+  defstruct [:spaces, :items, :perk_deck, :monster_deck, :players, :terror_track]
 
 
   def new(), do:
     %Board{
       terror_track: 0,
       perk_deck: Perk.get_deck(),
+      monster_deck: MonsterCard.get_deck(),
       spaces: [
         Space.new("hospital", :land, MapSet.new([
           "church"
